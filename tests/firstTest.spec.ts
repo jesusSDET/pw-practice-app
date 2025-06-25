@@ -88,3 +88,26 @@ test('reusing locators', async ({page}) => {
     await expect(emailField).toHaveValue('test@test.com')
 
 });
+
+
+test('locating elements with multiple locators', async ({page}) => {
+
+    //Single test value
+    const basicForm = page.locator('nb-card').filter({hasText: 'Basic form'});
+    const buttonText = await basicForm.locator('button').textContent();
+    expect(buttonText).toEqual('Submit');
+
+    //all text values
+    const allRadioButtonsLabels = await page.locator('nb-radio').allTextContents();
+    expect(allRadioButtonsLabels).toEqual(['Option 1', 'Option 2', 'Disabled Option']);
+
+    //input value
+    const emailField = basicForm.getByRole('textbox', {name: 'Email'});
+    const emailUser = 'test@test.com'
+    await emailField.fill(emailUser);
+    const emailValue = await emailField.inputValue()
+    expect(emailValue).toEqual(emailUser)
+
+    const placeholderValue = await emailField.getAttribute('placeholder');
+    expect(placeholderValue).toEqual('Email');
+});
