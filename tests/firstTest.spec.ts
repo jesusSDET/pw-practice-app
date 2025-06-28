@@ -90,7 +90,7 @@ test('reusing locators', async ({page}) => {
 });
 
 
-test('locating elements with multiple locators', async ({page}) => {
+test('extracting values', async ({page}) => {
 
     //Single test value
     const basicForm = page.locator('nb-card').filter({hasText: 'Basic form'});
@@ -110,4 +110,22 @@ test('locating elements with multiple locators', async ({page}) => {
 
     const placeholderValue = await emailField.getAttribute('placeholder');
     expect(placeholderValue).toEqual('Email');
+});
+
+test('asserting values', async ({page}) => {
+    const basicFormButton = page.locator('nb-card').filter({hasText: 'Basic form'}).locator('button');
+
+    //general assertion
+    const value = 5
+    expect(value).toEqual(5);
+
+    const buttonText = await basicFormButton.textContent();
+    expect(buttonText).toEqual('Submit');
+
+    //locator assertion
+    await expect(basicFormButton).toHaveText('Submit');
+
+    //soft assertion
+    await expect.soft(basicFormButton).toHaveText('Submit');
+    await basicFormButton.click();
 });
